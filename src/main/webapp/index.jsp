@@ -15,7 +15,7 @@
 </head>
 <body style="background-color:#f5f5f5; text-decoration: none; text-align: center;">
 	
-	<br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/>
 	<span class="display-1"><span style="color:grey;">OJ</span><span style="color:red;">A</span><span style="color:grey;">S</span></span><h1> HOSPITAL</h1>
 	<br/><br/><br/>
 			
