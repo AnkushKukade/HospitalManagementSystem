@@ -18,6 +18,8 @@ export default function PatientForm() {
   const [doctors, setDoctors] = useState([])
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [newPid, setNewPid] = useState(null)
+  const [opdMsg, setOpdMsg] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,12 +43,24 @@ export default function PatientForm() {
         await api.put(`/receptionist/patients/${pid}`, payload)
         setSuccess('Patient updated successfully')
       } else {
-        await api.post('/receptionist/patients', payload)
-        setSuccess('Patient registered successfully')
+        const res = await api.post('/receptionist/patients', payload)
+        setNewPid(res.data.pid)
+        setSuccess(`Patient registered successfully (ID: ${res.data.pid})`)
+        setOpdMsg('')
         setForm(EMPTY)
       }
     } catch (err) {
       setError(err.response?.data?.detail || 'Operation failed')
+    }
+  }
+
+  const addToOpd = async () => {
+    try {
+      const res = await api.post(`/receptionist/opd/${newPid}`)
+      setOpdMsg(res.data.message)
+      if (res.data.status === 1) setNewPid(null)
+    } catch {
+      setOpdMsg('Failed to add to OPD queue')
     }
   }
 
@@ -59,6 +73,12 @@ export default function PatientForm() {
       <div className="card">
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
+        {newPid && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <button className="btn btn-success" onClick={addToOpd}>+ Add to OPD Queue</button>
+            {opdMsg && <span style={{ fontSize: '0.85rem', color: '#2b6cb0' }}>{opdMsg}</span>}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group"><label>First Name *</label><input value={form.first_name} onChange={e => set('first_name', e.target.value)} required /></div>

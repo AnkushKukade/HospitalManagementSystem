@@ -37,8 +37,9 @@ export default function EmployeeForm() {
         await api.put(`/admin/employees/${eid}`, payload)
         setSuccess('Employee updated successfully')
       } else {
-        await api.post('/admin/employees', payload)
-        setSuccess('Employee added. Default password is their Aadhar number.')
+        const res = await api.post('/admin/employees', payload)
+        const eid = res.data.eid
+        setSuccess(`Employee added. Username: ${eid} | Default password is their Aadhar number.`)
         setForm(EMPTY)
       }
     } catch (err) {
